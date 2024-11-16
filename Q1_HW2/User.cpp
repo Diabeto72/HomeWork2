@@ -1,21 +1,20 @@
 
 #include "User.h"
-
+#include "DeviceList.h"
 void User::init(unsigned int id, std::string username, unsigned int age)
 {
     _id = id;
     _username = username;
     _age = age;
-    _newDevice.init();
+    _devices.init();
 }
-
 void User::clear()
-{            
-    delete &(_newDevice);
+{
     _id = 0;
-    _username = "";
-     _age = 0;
-        
+    _username.clear();
+    _age = 0;
+    _devices.clear();  
+    
 }
 
 unsigned int User::getID() const
@@ -31,6 +30,24 @@ unsigned int User::getAge() const
 {
     return _age;
 }
-DevicesList& getDevices() const;
-void addDevice(Device newDevice);
-bool checkIfDevicesAreOn() const;
+DevicesList& User::getDevices() 
+{
+    return _devices;
+}
+void User::addDevice(Device newDevice)
+{
+    _devices.add(newDevice);
+}
+bool User::checkIfDevicesAreOn() const
+{
+    DeviceNode* cur = _devices.get_first();
+    while (cur != nullptr)
+    {
+        if (!cur->get_data().isActive())
+        {
+            return false;
+        }
+    }
+    cur = cur->get_next();
+    return true;
+}
